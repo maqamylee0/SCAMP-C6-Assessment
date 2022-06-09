@@ -9,7 +9,7 @@ An app for consuming a recipe api.
  
  1 Choose recipe
 
- 2 Follow steps 
+ 2 Get ingredients 
  
- 3 Watch video 
+ 3 Watch video and follow steps
 
