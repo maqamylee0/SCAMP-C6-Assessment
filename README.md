@@ -1,15 +1,17 @@
 # shecode
 
-A new Flutter project.
+An app for consuming a recipe api.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+![Screens](https://github.com/maqamylee0/Rosary-App/blob/master/Choose%20day%20(1).png)
 
-A few resources to get you started if this is your first Flutter project:
+## Features of the app
+ 
+ 1 Choose recipe
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+ 2 Follow steps 
+ 
+ 3 Watch video 
 
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
