@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shecode/video.dart';
-import 'package:shecode/watch.dart';
+import 'package:video_player/video_player.dart';
 
 class Steps extends StatefulWidget {
   final Map data;
@@ -13,6 +13,27 @@ class Steps extends StatefulWidget {
 }
 
 class _StepsState extends State<Steps> {
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
+
+  @override
+  void initState() {
+    _controller = VideoPlayerController.network(
+      '${ widget.data['steps'][0]['videoURL']}',
+    );
+    _initializeVideoPlayerFuture = _controller.initialize();
+
+    _controller.setLooping(true);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
@@ -29,29 +50,44 @@ class _StepsState extends State<Steps> {
         ),
         child:Column(
           children: [
-            SizedBox(height: 10,),
             Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    child:Text("Watch Video",style: TextStyle(fontSize: 25),),
-                    onPressed: ()
-                    {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>  Watch(data : widget.data)),
-                      );
-                    },
-                  ),
-                  Container(
-                    child: Icon(Icons.arrow_right),
-                  ),
-                  SizedBox(width: 8,),
-
-                ],
+              child:  FutureBuilder(
+                future: _initializeVideoPlayerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    );
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
               ),
             ),
+            SizedBox(height: 10,),
+            // Container(
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.end,
+            //     children: [
+            //       TextButton(
+            //         child:Text("Watch Video",style: TextStyle(fontSize: 25),),
+            //         onPressed: ()
+            //         {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(builder: (context) =>  VideoPlayerScreen(data : widget.data['steps'][0]['videoURL'])),
+            //           );
+            //         },
+            //       ),
+            //       Container(
+            //         child: Icon(Icons.arrow_right),
+            //       ),
+            //       SizedBox(width: 8,),
+            //
+            //     ],
+            //   ),
+            // ),
           Expanded(
 
             child: ListTile(
@@ -75,31 +111,48 @@ class _StepsState extends State<Steps> {
                 )
             ),
           ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    child:Text("Watch Video",style: TextStyle(fontSize: 25),),
-                    onPressed: ()
-                    {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>  Watch(data : widget.data)),
-                      );
-                    },
-                  ),
-                  Container(
-                    child: Icon(Icons.arrow_right),
-                  ),
-                  SizedBox(width: 8,),
-
-                ],
-              ),
-            )
+            // Container(
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.end,
+            //     children: [
+            //       TextButton(
+            //         child:Text("Watch Video",style: TextStyle(fontSize: 25),),
+            //         onPressed: ()
+            //         {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(builder: (context) =>  VideoPlayerScreen(data : widget.data['steps'][0]['videoURL'])),
+            //           );
+            //         },
+            //       ),
+            //       Container(
+            //         child: Icon(Icons.arrow_right),
+            //       ),
+            //       SizedBox(width: 8,),
+            //
+            //     ],
+            //   ),
+            // )
           ],
         )
 
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            // pause
+            if (_controller.value.isPlaying) {
+              _controller.pause();
+            } else {
+              // play
+              _controller.play();
+            }
+          });
+        },
+        // icon
+        child: Icon(
+          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        ),
       ),
     ));
   }
